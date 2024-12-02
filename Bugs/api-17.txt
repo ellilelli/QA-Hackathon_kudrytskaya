@@ -1,0 +1,58 @@
+Summary:
+    [GET users/{uuid}orders] 'Limits' parameter is not working
+
+Steps to Reproduce:
+    1.  Create 2 orders by API:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users/78ef6a67-0c34-403a-935b-91c0c8273808/orders' \
+        --header 'accept: application/json' \
+        --header 'X-Task-Id: api-17' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data '{
+          "items": [
+            {
+              "item_uuid": "aca79a7c-5b66-4ff2-b3b8-57e56fc053a7",
+              "quantity": 11
+            }
+          ]
+        }'
+
+    2. Call GET users/{uuid}orders with limit=1:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users/78ef6a67-0c34-403a-935b-91c0c8273808/orders?limit=1' \
+        --header 'X-Task-Id: api-17' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data ''
+
+Expected Result:
+    In the response only one order according to the limit:
+        {
+        "meta": {
+            "total": 6
+        },
+        "orders": [
+            {
+                "created_at": "2024-12-02T14:56:25.848386Z",
+                "items": [
+                    {
+                        "item_uuid": "aca79a7c-5b66-4ff2-b3b8-57e56fc053a7",
+                        "quantity": 11,
+                        "total_price": 32989
+                    }
+                ],
+                "status": "open",
+                "total_price": 32989,
+                "updated_at": "2024-12-02T14:56:25.848386Z",
+                "user_uuid": "78ef6a67-0c34-403a-935b-91c0c8273808",
+                "uuid": "55764a61-c7bd-4a96-9940-32f312829c2f"
+            }
+        ]
+    }
+
+Actual Result:
+    All 3 items are in the response
+
+
+Severity:
+    Major
+
+
