@@ -1,0 +1,104 @@
+Summary:
+    [GET /categories/{uuid}/games] In the response returns games by the wrong category
+
+Steps to Reproduce:
+    1.  Take the categories list:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/categories' \
+        --header 'accept: application/json' \
+        --header 'X-Task-Id: api-10' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com'
+
+    2. Save the 1st and 2nd categories  uuid from the Step 1 response:
+        {
+            "categories": [
+                {
+                    "name": "Action",
+                    "uuid": "8126d35b-5336-41ad-981d-f245c3e05665"
+                },
+                {
+                    "name": "Action RPG",
+                    "uuid": "78fcb98b-d820-4d79-a049-e2089b7ce87a"
+                },
+                ...
+            ]
+        }
+
+    3. Get games by category from the Step 2:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/categories/8126d35b-5336-41ad-981d-f245c3e05665/games' \
+        --header 'accept: application/json' \
+        --header 'X-Task-Id: api-10' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com'
+
+Expected Result:
+    The games are found by the requested category (Action):
+    {
+        "games": [
+            {
+                "category_uuids": [
+                    "8126d35b-5336-41ad-981d-f245c3e05665"
+                ],
+                "price": 2999,
+                "title": "Red Dead Redemption 2",
+                "uuid": "aca79a7c-5b66-4ff2-b3b8-57e56fc053a7"
+            },
+            {
+                "category_uuids": [
+                    "8126d35b-5336-41ad-981d-f245c3e05665"
+                ],
+                "price": 1999,
+                "title": "The Last of Us",
+                "uuid": "77a94eec-38e0-4a08-a3d7-2be1007ef686"
+            },
+            {
+                "category_uuids": [
+                    "8126d35b-5336-41ad-981d-f245c3e05665"
+                ],
+                "price": 4999,
+                "title": "Uncharted 4: A Thief's End",
+                "uuid": "5449c9d0-3399-44e1-bd63-f6cbb62c38ea"
+            }
+        ],
+        "meta": {
+            "total": 3
+        }
+    }
+
+Actual Result:
+    The games by another category (Action RPG) in the response:
+    {
+        "games": [
+            {
+                "category_uuids": [
+                    "78fcb98b-d820-4d79-a049-e2089b7ce87a"
+                ],
+                "price": 5999,
+                "title": "Elden Ring",
+                "uuid": "03dbad48-ad81-433d-9901-dd5332f5d9ee"
+            },
+            {
+                "category_uuids": [
+                    "78fcb98b-d820-4d79-a049-e2089b7ce87a"
+                ],
+                "price": 2499,
+                "title": "The Elder Scrolls V: Skyrim",
+                "uuid": "09531e2b-c3eb-4338-a002-cc4817a7cc58"
+            },
+            {
+                "category_uuids": [
+                    "78fcb98b-d820-4d79-a049-e2089b7ce87a"
+                ],
+                "price": 999,
+                "title": "The Witcher 3: Wild Hunt",
+                "uuid": "06520f6e-5096-4d49-a044-136357737eff"
+            }
+        ],
+        "meta": {
+            "total": 3
+        }
+    }
+
+Additional Information:
+    In the response, always games by category 78fcb98b-d820-4d79-a049-e2089b7ce87a returns.
+
+Severity:
+    Blocker (impossible to take the games not from the Action RPG category)

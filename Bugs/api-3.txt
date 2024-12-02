@@ -1,0 +1,43 @@
+Summary:
+    [POST /users] Nickname is not set when creating a user
+
+Steps to Reproduce:
+    1. Send a POST request to the /users endpoint with non-empty nickname
+
+    Example cURL request:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users' \
+        --header 'X-Task-Id: api-3' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data-raw '{
+          "email": "elli@gmail.com",
+          "password": "111111",
+          "name": "Elli",
+          "nickname": "elli"
+        }'
+
+Expected Result:
+    The response should contain the set nickname, like so:
+    {
+        "avatar_url": "",
+        "email": "elli@gmail.com",
+        "name": "Elli",
+        "nickname": "elli",
+        "uuid": "151c51f3-0071-46a4-8a5a-9528473e4257"
+    }
+
+Actual Result:
+    Empty nickname value, like so:
+    {
+        "avatar_url": "",
+        "email": "elli@gmail.com",
+        "name": "Elli",
+        "nickname": "",
+        "uuid": "151c51f3-0071-46a4-8a5a-9528473e4257"
+    }
+
+Additional Information:
+    After sending numeric nickname as a parameter, system is broken - API always responds 500
+
+Severity:
+    Blocker (after sending numeric uuid create a user impossible).

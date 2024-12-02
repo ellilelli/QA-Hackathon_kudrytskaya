@@ -1,0 +1,60 @@
+Summary:
+    [PATCH /users] No validation for the email that was used by another user
+
+Steps to Reproduce:
+    1.  Create a user_1:
+         curl --location 'https://dev-gs.qa-playground.com/api/v1/users/' \
+        --header 'X-Task-id: api-4' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data-raw '{
+            "email": "elli@gmail.com",
+            "password": "password",
+            "name": "Elli",
+            "nickname": "ellli"
+        }'
+
+    2. Create a user_2:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users/' \
+        --header 'X-Task-id: api-4' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data-raw '{
+            "email": "elli_2@gmail.com",
+            "password": "password",
+            "name": "Ellli",
+            "nickname": "elllli"
+        }'
+
+    3. Replase the email of the user_1 on the email of the user_2:
+        curl --location --request PATCH 'https://dev-gs.qa-playground.com/api/v1/users/0a1a1fcd-9f6f-4e23-b11c-bd7c646f48b2' \
+        --header 'X-Task-Id: api-4' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data-raw '{
+          "email": "elli_2@gmail.com"
+        }'
+
+Expected Result:
+    409 Conflict, like so:
+    {
+        "code": 409,
+        "message": "User with the following \"email\" already exists: elli_2@gmail.com"
+    }
+
+Actual Result:
+    200 OK, the same email as used for another user set, like so:
+    {
+        "avatar_url": "",
+        "email": "elli_2@gmail.com",
+        "password": "password",
+        "name": "Elli1",
+        "nickname": "ellli1"
+    }
+
+Additional Information:
+    For user_2 the email stayed the same - elli_2@gmail.com.
+    We have 2 users with the same email in the DS because of the bug.
+
+Severity:
+    Major.

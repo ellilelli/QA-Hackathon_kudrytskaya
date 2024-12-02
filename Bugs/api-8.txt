@@ -1,0 +1,62 @@
+Summary:
+    [POST /wishlist/remove] The item is not removed from the wishlist if the response status code == 200
+
+Preconditions:
+    User has no items in the wishlist:
+    curl --location 'https://dev-gs.qa-playground.com/api/v1/users/46243e7f-aed0-4509-b9ae-cb27fe78ddb3/wishlist' \
+    --header 'accept: application/json' \
+    --header 'X-Task-Id: api-8' \
+    --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com'
+
+    Response:
+    {
+        "items": [],
+        "user_uuid": "26d8c7b9-d5ac-47fc-8af7-48abd70234b7"
+    }
+
+Steps to Reproduce:
+    1. Add an item to the user's wishlist:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users/26d8c7b9-d5ac-47fc-8af7-48abd70234b7/wishlist/add' \
+        --header 'accept: application/json' \
+        --header 'X-Task-Id: api-8' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data '{
+          "item_uuid": "0378c074-92d6-4d8c-b6d3-878c08dbe27f"
+        }'
+
+    2. Check that the item in the user's wishlist:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users/26d8c7b9-d5ac-47fc-8af7-48abd70234b7/wishlist' \
+        --header 'accept: application/json' \
+        --header 'X-Task-Id: api-8' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com'
+
+    3. Delete the added item:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users/26d8c7b9-d5ac-47fc-8af7-48abd70234b7/wishlist/remove/' \
+        --header 'accept: application/json' \
+        --header 'X-Task-Id: api-8' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data '{
+          "item_uuid": "0378c074-92d6-4d8c-b6d3-878c08dbe27f"
+        }'
+
+    4. Check if the item deleted from the wishlist:
+         curl --location 'https://dev-gs.qa-playground.com/api/v1/users/26d8c7b9-d5ac-47fc-8af7-48abd70234b7/wishlist' \
+        --header 'accept: application/json' \
+        --header 'X-Task-Id: api-8' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com'
+
+Expected Result:
+    Step 1: status 200.
+    Step 2: item is in the wishlist
+    Step 3: status 200 OK, the item is not presented in the response list
+    Step 4: the item is not presented in the response
+
+Result:
+    Step 1: status 200.
+    Step 2: item is in the wishlist
+    Step 3: status 200 OK, the item is in the response list
+    Step 4: the item is in the response list (not deleted)
+
+Severity: Blocker (impossible to delete an item)

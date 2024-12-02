@@ -1,0 +1,63 @@
+Summary:
+    [POST /wishlist/add] The item is not added to the wishlist if the response status code == 200
+
+Preconditions:
+    User has no items in the wishlist:
+    curl --location 'https://dev-gs.qa-playground.com/api/v1/users/46243e7f-aed0-4509-b9ae-cb27fe78ddb3/wishlist' \
+    --header 'accept: application/json' \
+    --header 'X-Task-Id: api-5' \
+    --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com'
+
+    Response:
+    {
+        "items": [],
+        "user_uuid": "26d8c7b9-d5ac-47fc-8af7-48abd70234b7"
+    }
+
+Steps to Reproduce:
+    1. Add an item to the user's wishlist:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users/26d8c7b9-d5ac-47fc-8af7-48abd70234b7/wishlist/add' \
+        --header 'accept: application/json' \
+        --header 'X-Task-Id: api-25' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data '{
+          "item_uuid": "0378c074-92d6-4d8c-b6d3-878c08dbe27f"
+        }'
+
+    2. Check if the item in the user's wishlist:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users/26d8c7b9-d5ac-47fc-8af7-48abd70234b7/wishlist' \
+        --header 'accept: application/json' \
+        --header 'X-Task-Id: api-25' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com'
+
+Expected Result:
+    Step 1: status 200.
+    Step 2: item is in the wishlist, as is:
+        {
+    "items": [
+        {
+                "category_uuids": [
+                    "ac949f6c-80f5-40dd-9723-0cd47706060e"
+                ],
+                "price": 5999,
+                "title": "Baldur's Gate 3",
+                "uuid": "0378c074-92d6-4d8c-b6d3-878c08dbe27f"
+            }
+        ],
+        "user_uuid": "26d8c7b9-d5ac-47fc-8af7-48abd70234b7"
+    }
+
+Result:
+    Step 1: status 200.
+    Step 2: item is not in the wishlist, as is:
+        {
+            "items": [],
+            "user_uuid": "26d8c7b9-d5ac-47fc-8af7-48abd70234b7"
+        }
+
+Additional Info:
+    In the response on the POST /wishlist/add returns a requested item what is not consistent with the database data.
+    Please, check how the response created.
+
+Severity: Blocker (Impossible to add an item to the wishlist)

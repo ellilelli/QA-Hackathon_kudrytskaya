@@ -1,0 +1,44 @@
+Summary:
+    [POST /users/login] API always responds 404 status code
+
+Steps to Reproduce:
+    1. Create the user and set the credentials:
+        curl --location 'https://release-gs.qa-playground.com/api/v1/users/' \
+        --header 'X-Task-Id: api-22' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data-raw '{
+            "email": "elli@gmail.com",
+            "password": "password",
+            "name": "Elli",
+            "nickname": "elli"
+        }'
+    2. Use the credentials from the Step 1 to log-in:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users/login' \
+        --header 'X-Task-Id: api-7' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data-raw '{
+          "email": "elli@gmail.com",
+          "password": "password"
+        }'
+
+Expected Result:
+    200 OK, like so:
+    {
+        "avatar_url": "",
+        "email": "elli@gmail.com",
+        "name": "Elli",
+        "nickname": "elli",
+        "uuid": "ccff346c-c696-46b6-917e-2a93f08f43b1"
+    }
+
+Actual Result:
+    404, like so:
+    {
+        "code": 404,
+        "message": "Could not find user with given credentials"
+    }
+
+Severity:
+    Blocker (Impossible to log-in).

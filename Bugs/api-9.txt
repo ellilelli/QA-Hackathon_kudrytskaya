@@ -1,0 +1,41 @@
+Summary:
+    [GET /games/{uuid}] The game can't be found by uuid
+
+Steps to Reproduce:
+    1.  Take the games list:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/games?offset=1&limit=1' \
+        --header 'accept: application/json' \
+        --header 'X-Task-Id: api-9' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com'
+
+    2. Save the game uuid from the Step 1 response:
+        {
+        ...
+        "uuid": "5449c9d0-3399-44e1-bd63-f6cbb62c38ea"
+        }
+
+    3. Search a game by its title:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/games/5449c9d0-3399-44e1-bd63-f6cbb62c38ea' \
+        --header 'accept: application/json' \
+        --header 'X-Task-Id: api-9' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com'
+
+Expected Result:
+    The game is found by the uuid:
+    {
+        "category_uuids": [
+            "8126d35b-5336-41ad-981d-f245c3e05665"
+        ],
+        "price": 4999,
+        "title": "Uncharted 4: A Thief's End",
+        "uuid": "5449c9d0-3399-44e1-bd63-f6cbb62c38ea"
+    }
+
+Actual Result:
+    The game not found
+    {
+        "code": 404,
+        "message": "Could not find game with \"uuid\": 5449c9d0-3399-44e1-bd63-f6cbb62c38ea"
+    }
+
+Severity: Blocker (impossible to take the game info by the API /games/{uuid})

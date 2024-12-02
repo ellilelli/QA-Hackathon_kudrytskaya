@@ -1,0 +1,63 @@
+Summary:
+    [PATCH /users] Password doesn't changes by API
+
+Steps to Reproduce:
+    1.  Create a user:
+         curl --location 'https://dev-gs.qa-playground.com/api/v1/users/' \
+        --header 'X-Task-id: api-24' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data-raw '{
+            "email": "elli@gmail.com",
+            "password": "password",
+            "name": "Elli",
+            "nickname": "elli"
+        }'
+
+    2. Call login API:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users/login' \
+        --header 'X-Task-Id: api-24' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data-raw '{
+          "email": "elli@gmail.com",
+          "password": "password"
+        }'
+
+    3. Check Step 2 result:
+        200 OK
+
+    4. Change user's password:
+        curl --location --request PATCH 'https://dev-gs.qa-playground.com/api/v1/users/a05fbdf8-5558-46f6-a518-93929f6ee7a3' \
+        --header 'X-Task-Id: api-24' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data '{
+          "password": "123456"
+        }'
+
+    5. Call login API with the new password:
+         curl --location 'https://dev-gs.qa-playground.com/api/v1/users/login' \
+        --header 'X-Task-Id: api-24' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data-raw '{
+          "email": "elli@gmail.com",
+          "password": "123456"
+        }'
+
+Expected Result:
+    Successful login: 200 OK
+
+Actual Result:
+    404 Not found:
+    {
+        "code": 404,
+        "message": "Could not find user with given credentials"
+    }
+
+Additional Information:
+    Old password doesn't fit anymore.
+
+Severity:
+    Blocker (no ability to log-in after update the password).

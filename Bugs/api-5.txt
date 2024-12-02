@@ -1,0 +1,56 @@
+Summary:
+    [POST /wishlist/add] API responds 422 if the limit wasn't reached
+
+Preconditions:
+    User has no items in the wishlist:
+    curl --location 'https://dev-gs.qa-playground.com/api/v1/users/46243e7f-aed0-4509-b9ae-cb27fe78ddb3/wishlist' \
+    --header 'accept: application/json' \
+    --header 'X-Task-Id: api-5' \
+    --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com'
+
+    Response:
+    {
+        "items": [],
+        "user_uuid": "46243e7f-aed0-4509-b9ae-cb27fe78ddb3"
+    }
+
+Steps to Reproduce:
+    1. Add an item to the user's wishlist:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users/46243e7f-aed0-4509-b9ae-cb27fe78ddb3/wishlist/add' \
+        --header 'accept: application/json' \
+        --header 'X-Task-Id: api-5' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data '{
+          "item_uuid": "5449c9d0-3399-44e1-bd63-f6cbb62c38ea"
+        }'
+
+
+Expected Result:
+    Response code: 200 OK
+    {
+        "items": [
+            {
+                "category_uuids": [
+                    "8126d35b-5336-41ad-981d-f245c3e05665"
+                ],
+                "price": 4999,
+                "title": "Uncharted 4: A Thief's End",
+                "uuid": "5449c9d0-3399-44e1-bd63-f6cbb62c38ea"
+            }
+        ],
+        "user_uuid": "46243e7f-aed0-4509-b9ae-cb27fe78ddb3"
+    }
+
+Actual Result:
+    {
+        "code": 422,
+        "message": "Wishlist limit is reached: 10"
+    }
+
+Additional Information:
+    The most common reason is the limit was set on the Backend side. Looks like in the config the limit value is 10,
+    probably, the problem is in the code.
+
+Severity:
+    Blocker (Impossible to add the item to the wishlist)

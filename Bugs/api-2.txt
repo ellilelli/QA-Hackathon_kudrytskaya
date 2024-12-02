@@ -1,0 +1,44 @@
+Summary:
+    [GET /games/search] Not requested game returns in the response
+
+Steps to Reproduce:
+    1.  Take the games list:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/games?offset=1&limit=1' \
+        --header 'accept: application/json' \
+        --header 'X-Task-Id: api-6' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com'
+
+    2. Save the game title from the Step 1 response:
+        {
+        ...
+        "title": "Baldur's Gate 3"
+        }
+
+    3. Search a game by its title:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/games/search?query=Baldur%27s%20Gate%203' \
+        --header 'accept: application/json' \
+        --header 'X-Task-Id: api-2' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com'
+
+Expected Result:
+    Only requested game is in the response, total: 1, as is:
+    {
+        "games": [
+            {
+                "category_uuids": [
+                    "ac949f6c-80f5-40dd-9723-0cd47706060e"
+                ],
+                "price": 5999,
+                "title": "Baldur's Gate 3",
+                "uuid": "0378c074-92d6-4d8c-b6d3-878c08dbe27f"
+            }
+        ],
+        "meta": {
+            "total": 1
+        }
+    }
+
+Actual Result:
+    All games are in the response, total: 10
+
+Severity: Critical (search functionality doesn't work but the game could be find by category API)

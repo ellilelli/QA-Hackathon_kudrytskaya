@@ -1,0 +1,26 @@
+Summary:
+    [POST /users] Set numeric string as a 'Nickname': Server responds 500
+
+Steps to Reproduce:
+    1. Send a POST request to the /users endpoint with numeric nickname
+
+    Example cURL request:
+        curl --location 'https://release-gs.qa-playground.com/api/v1/users' \
+            --header 'X-Task-Id: api-22' \
+            --header 'Content-Type: application/json' \
+            --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+            --data-raw '{
+              "email": "eli@g.c",
+              "password": "111111",
+              "name": "121",
+              "nickname": "eli"
+            }'
+
+Expected Result:
+    Response code: 200 OK
+
+Actual Result:
+    Response code: 500 Internal Server Error
+
+Severity:
+    Critical (POST /users stops its work)

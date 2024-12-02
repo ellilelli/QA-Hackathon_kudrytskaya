@@ -1,0 +1,50 @@
+Summary:
+    [GET /users/{uuid}] In the response always the 1st user returns instead of the requested one
+
+Steps to Reproduce:
+    1. Send a GET request to reseive not the 1st existing /users:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users?offset=1&limit=1' \
+        --header 'X-Task-Id: api-2' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com'
+    2. Save the 'users' section from the response, exapmle:
+        {
+        ...
+            "users": [
+                {
+                    "avatar_url": "",
+                    "email": "john@gmail.com",
+                    "name": "John",
+                    "nickname": "john",
+                    "uuid": "26d8c7b9-d5ac-47fc-8af7-48abd70234b7"
+                }
+            ]
+        }
+    3. Call API 'Get a user' by uuid from the Step 2:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users/26d8c7b9-d5ac-47fc-8af7-48abd70234b7' \
+        --header 'X-Task-Id: api-23' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data ''
+
+
+Expected Result:
+    User with requested uuid in the response:
+        {
+            "avatar_url": "",
+            "email": "john@gmail.com",
+            "name": "John",
+            "nickname": "john",
+            "uuid": "26d8c7b9-d5ac-47fc-8af7-48abd70234b7"
+        }
+
+Actual Result:
+    Another user in the response (always the 1st one, received by GET /users with offset=0):
+        {
+            "avatar_url": "",
+            "email": "alex@gmail.com",
+            "name": "Alex",
+            "nickname": "",
+            "uuid": "a05fbdf8-5558-46f6-a518-93929f6ee7a3"
+        }
+
+Severity:
+    Critical (impossible to receive the data about the player by uuid)

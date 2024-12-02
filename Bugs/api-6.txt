@@ -1,0 +1,52 @@
+Summary:
+    [GET /users] The offset parameter is not functioning if offset != 0
+
+Steps to Reproduce:
+    1. Send a GET request to the /users endpoint with the following parameters:
+    offset=1
+    limit=1
+
+    Example cURL request:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users?offset=1&limit=1' \
+        --header 'X-Task-Id: api-6' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com'
+
+Expected Result:
+    The response should contain the second user (with index 1 in the list), like so:
+    {
+        "meta": {
+            "total": 11
+        },
+        "users": [
+            {
+                "avatar_url": "",
+                "email": "john@gmail.com",
+                "name": "John",
+                "nickname": "john",
+                "uuid": "26d8c7b9-d5ac-47fc-8af7-48abd70234b7"
+            }
+        ]
+    }
+
+Actual Result:
+    The response contains the first user (with index 0), like so:
+    {
+        "meta": {
+            "total": 11
+        },
+        "users": [
+            {
+                "avatar_url": "",
+                "email": "alex@gmail.com",
+                "name": "Alex",
+                "nickname": "alex",
+                "uuid": "31acad46-6286-49e2-9bf8-b12d6cb022cb"
+            }
+        ]
+    }
+
+Additional Information:
+    This issue could affect users who rely on pagination to fetch specific subsets of data.
+
+Severity:
+    Major (affects pagination functionality).

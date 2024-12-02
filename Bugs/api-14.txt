@@ -1,0 +1,67 @@
+Summary:
+    [POST /cart/remove] API deletes not requested items
+
+Steps to Reproduce:
+    1.  Add an item to the cart:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users/46243e7f-aed0-4509-b9ae-cb27fe78ddb3/cart/add' \
+        --header 'accept: application/json' \
+        --header 'X-Task-Id: api-14' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data '{
+          "item_uuid": "5449c9d0-3399-44e1-bd63-f6cbb62c38ea",
+          "quantity": 1
+        }'
+
+    2. Add another item to the cart:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users/46243e7f-aed0-4509-b9ae-cb27fe78ddb3/cart/add' \
+        --header 'accept: application/json' \
+        --header 'X-Task-Id: api-14' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data '{
+          "item_uuid": "aca79a7c-5b66-4ff2-b3b8-57e56fc053a7",
+          "quantity": 1
+        }'
+
+    3. Remove one of the items from the cart:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users/46243e7f-aed0-4509-b9ae-cb27fe78ddb3/cart/remove' \
+        --header 'accept: application/json' \
+        --header 'X-Task-Id: api-14' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data '{
+          "item_uuid": "5449c9d0-3399-44e1-bd63-f6cbb62c38ea"
+        }'
+
+    4. Check the items in the cart:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users/46243e7f-aed0-4509-b9ae-cb27fe78ddb3/cart' \
+        --header 'accept: application/json' \
+        --header 'X-Task-Id: api-14' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com'
+
+Expected Result:
+    Only requested item removed, in the cart:
+        {
+            "items": [
+                {
+                    "item_uuid": "aca79a7c-5b66-4ff2-b3b8-57e56fc053a7",
+                    "quantity": 1,
+                    "total_price": 2999
+                }
+            ],
+            "total_price": 2999,
+            "user_uuid": "46243e7f-aed0-4509-b9ae-cb27fe78ddb3"
+        }
+
+Actual Result:
+    All items were removed:
+        {
+            "items": [],
+            "total_price": 0,
+            "user_uuid": "46243e7f-aed0-4509-b9ae-cb27fe78ddb3"
+        }
+
+
+Severity:
+    Blocker

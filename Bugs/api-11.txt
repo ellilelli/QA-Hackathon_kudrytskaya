@@ -1,0 +1,46 @@
+Summary:
+    [PUT /users/{uuid}/avatar] The avatar url is not set when setting it by API
+
+Steps to Reproduce:
+    1.  Set the avatar for the existing user:
+        curl --location --request PUT 'https://dev-gs.qa-playground.com/api/v1/users/26d8c7b9-d5ac-47fc-8af7-48abd70234b7/avatar' \
+        --header 'X-Task-Id: api-11' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --form 'avatar_file=@"postman-cloud:///1efb0aab-8a69-4af0-bdf1-37e75d9e4d0c"'
+
+    2. Call api to receive the user information:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users/26d8c7b9-d5ac-47fc-8af7-48abd70234b7' \
+        --header 'X-Task-id: api-1' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data ''
+
+Expected Result:
+    The avatar url is set:
+    {
+        "avatar_url": "https://gravatar.com/avatar/4e79ced02c503a30c390174221012d12?f=y",
+        "email": "john@gmail.com",
+        "name": "John",
+        "nickname": "john",
+        "uuid": "26d8c7b9-d5ac-47fc-8af7-48abd70234b7"
+    }
+
+Actual Result:
+    The avatar url does not set:
+    {
+        "avatar_url": "",
+        "email": "john@gmail.com",
+        "name": "John",
+        "nickname": "john",
+        "uuid": "26d8c7b9-d5ac-47fc-8af7-48abd70234b7"
+    }
+
+Additional Information:
+    In the response PUT /users/{uuid}/avatar, returns url:
+    https://qa-playground.com/avatar/b7a451814962cb7c206d6969799e3eff?f=y
+    with non-production host,
+    and hach is not like the production one. Probably, wrong hach method is used for the dev api.
+    Expected url and hach is:
+    https://gravatar.com/avatar/4e79ced02c503a30c390174221012d12?f=y
+
+Severity:
+    Blocker (impossible to set up the avatar)

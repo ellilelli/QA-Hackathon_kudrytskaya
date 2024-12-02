@@ -1,0 +1,35 @@
+Summary:
+    [GET /users] The total field in the response always returns 0 instead of the actual number of users
+
+Steps to Reproduce:
+    1. Send a GET request to the /users endpoint with the following parameter:
+    limit=100
+
+    Example cURL request:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users?limit=100' \
+        --header 'X-Task-Id: api-21' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com'
+
+Expected Result:
+    The 'total' field should reflect the actual number of users in the system.
+    For example, if there are 11 users in total, the response should contain:
+        {
+            "meta": {
+                "total": 11
+            },
+            "users": [
+                // List of users...
+            ]
+        }
+
+Actual Result:
+    The 'total' field always returns 0, regardless of the actual number of users in the system.
+    Example:
+        {
+            "meta": {
+                "total": 0
+            },
+            "users": [
+                // List of users...
+            ]
+        }

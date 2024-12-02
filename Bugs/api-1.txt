@@ -1,0 +1,35 @@
+Summary:
+    [DELETE /users/{user_uuid}}] Response 500 instead of 204 if send existing uuid
+
+Steps to Reproduce:
+    1.  Create the user and set the credentials:
+        curl --location 'https://release-gs.qa-playground.com/api/v1/users/' \
+        --header 'X-Task-Id: api-22' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data-raw '{
+            "email": "elli@gmail.com",
+            "password": "password",
+            "name": "Elli",
+            "nickname": "elli"
+        }'
+    2. Save the uuid from the Step 1 response:
+        {
+        ...
+        "uuid": "50e2235e-f487-4b90-90c3-12bc834bf96d"
+        }
+    3. Delete the user by uuid from the Step 2:
+        curl --location --request DELETE 'https://dev-gs.qa-playground.com/api/v1/users/50e2235e-f487-4b90-90c3-12bc834bf96d' \
+        --header 'X-Task-Id: api-1' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data ''
+
+Expected Result:
+    204 No content, the user is deleted
+
+Actual Result:
+    500 Internal Server Error, the user is not deleted:
+    {
+        "code": 500,
+        "message": "Internal server error"
+    }

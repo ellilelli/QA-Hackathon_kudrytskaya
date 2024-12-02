@@ -1,0 +1,51 @@
+Summary:
+    [POST cart/change] Empty items list in the response
+
+Steps to Reproduce:
+    1.  Add an item to the cart:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users/46243e7f-aed0-4509-b9ae-cb27fe78ddb3/cart/add' \
+        --header 'accept: application/json' \
+        --header 'X-Task-Id: api-13' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data '{
+          "item_uuid": "5449c9d0-3399-44e1-bd63-f6cbb62c38ea",
+          "quantity": 1
+        }'
+
+    2. Change the amount of the items:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users/46243e7f-aed0-4509-b9ae-cb27fe78ddb3/cart/change' \
+        --header 'accept: application/json' \
+        --header 'X-Task-Id: api-13' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data '{
+          "item_uuid": "5449c9d0-3399-44e1-bd63-f6cbb62c38ea",
+          "quantity": 2
+        }'
+
+Expected Result:
+    In the response the renewed items list:
+    {
+        "items": [
+            {
+                "item_uuid": "5449c9d0-3399-44e1-bd63-f6cbb62c38ea",
+                "quantity": 2,
+                "total_price": 9998
+            }
+        ],
+        "total_price": 9998,
+        "user_uuid": "46243e7f-aed0-4509-b9ae-cb27fe78ddb3"
+    }
+
+Actual Result:
+    Renewed items list is empty:
+    {
+        "items": [],
+        "total_price": 9998,
+        "user_uuid": "46243e7f-aed0-4509-b9ae-cb27fe78ddb3"
+    }
+
+
+Severity:
+    Major
