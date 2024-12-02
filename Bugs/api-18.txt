@@ -1,0 +1,61 @@
+Summary:
+    [PATCH orders/{uuid}/status] 'open' status can't be changed to the 'canceled'
+
+Steps to Reproduce:
+1. Create a new order:
+    curl --location 'https://dev-gs.qa-playground.com/api/v1/users/78ef6a67-0c34-403a-935b-91c0c8273808/orders' \
+    --header 'accept: application/json' \
+    --header 'X-Task-Id: api-18' \
+    --header 'Content-Type: application/json' \
+    --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+    --data '{
+      "items": [
+        {
+          "item_uuid": "aca79a7c-5b66-4ff2-b3b8-57e56fc053a7",
+          "quantity": 1
+        }
+      ]
+    }'
+
+2. Change the order's status:
+    curl --location --request PATCH 'https://dev-gs.qa-playground.com/api/v1/orders/dc83a095-9ea5-4ad0-a4a0-5e8b682cac7e/status' \
+    --header 'X-Task-Id: api-18' \
+    --header 'Content-Type: application/json' \
+    --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+    --data '{
+      "status": "canceled"
+    }'
+
+Expected result:
+The status changed to 'cancelled':
+    {
+        "created_at": "2024-12-02T14:56:25.848386Z",
+        "items": [
+            {
+                "item_uuid": "dc83a095-9ea5-4ad0-a4a0-5e8b682cac7e",
+                "quantity": 1,
+                "total_price": 999
+            }
+        ],
+        "status": "canceled",
+        "total_price": 32989,
+        "updated_at": "2024-12-02T15:34:08.135733644Z",
+        "user_uuid": "78ef6a67-0c34-403a-935b-91c0c8273808",
+        "uuid": "55764a61-c7bd-4a96-9940-32f312829c2f"
+    }
+
+Result:
+   The status is not changed:
+    {
+        "code": 422,
+        "message": "Operation forbidden. Order \"status\": the following statuses cannot be changed: completed, canceled"
+    }
+
+Additional Information:
+The bug is reised because only 'cancelled' status could be changed:
+    {
+        "code": 400,
+        "message": "request body has an error: doesn't match schema #/components/schemas/PatchOrderStatus: Error at \"/status\": value is not one of the allowed values [\"canceled\"]"
+    }
+
+Severity: Blocker

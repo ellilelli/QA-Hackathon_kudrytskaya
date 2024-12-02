@@ -1,0 +1,58 @@
+Summary:
+    [POST users/orders] 'Limits' parameter is not working
+
+Steps to Reproduce:
+    1.  Create 1 order with the duplicated items by API:
+        curl --location 'https://dev-gs.qa-playground.com/api/v1/users/78ef6a67-0c34-403a-935b-91c0c8273808/orders' \
+        --header 'accept: application/json' \
+        --header 'X-Task-Id: api-16' \
+        --header 'Content-Type: application/json' \
+        --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
+        --data '{
+          "items": [
+            {
+              "item_uuid": "aca79a7c-5b66-4ff2-b3b8-57e56fc053a7",
+              "quantity": 11
+            },
+            {
+              "item_uuid": "aca79a7c-5b66-4ff2-b3b8-57e56fc053a7",
+              "quantity": 1
+            }
+          ]
+        }'
+
+
+Expected Result:
+    Duplicated items could not be added:
+    {
+        "code": 400,
+        "message": "Items with the following \"uuid\" are duplicated: aca79a7c-5b66-4ff2-b3b8-57e56fc053a7"
+    }
+
+Actual Result:
+Duplicated items are added:
+    {
+        "created_at": "2024-12-02T15:28:25.412203209Z",
+        "items": [
+            {
+                "item_uuid": "aca79a7c-5b66-4ff2-b3b8-57e56fc053a7",
+                "quantity": 11,
+                "total_price": 32989
+            },
+            {
+                "item_uuid": "aca79a7c-5b66-4ff2-b3b8-57e56fc053a7",
+                "quantity": 1,
+                "total_price": 2999
+            }
+        ],
+        "status": "open",
+        "total_price": 35988,
+        "updated_at": "2024-12-02T15:28:25.412203209Z",
+        "user_uuid": "78ef6a67-0c34-403a-935b-91c0c8273808",
+        "uuid": "770f5079-6e9a-4116-bf13-9960cc62bc1a"
+    }
+
+Severity:
+    Major
+
+

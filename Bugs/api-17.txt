@@ -1,5 +1,5 @@
 Summary:
-    [GET users/{uuid}orders] 'Limits' parameter is not working
+    [GET users/{uuid}/orders] 'Limits' parameter is not working
 
 Steps to Reproduce:
     1.  Create 2 orders by API:
@@ -17,7 +17,7 @@ Steps to Reproduce:
           ]
         }'
 
-    2. Call GET users/{uuid}orders with limit=1:
+    2. Call GET users/{uuid}/orders with limit=1:
         curl --location 'https://dev-gs.qa-playground.com/api/v1/users/78ef6a67-0c34-403a-935b-91c0c8273808/orders?limit=1' \
         --header 'X-Task-Id: api-17' \
         --header 'Authorization: Bearer qahack2024:e.kudrytskaya@gmail.com' \
